@@ -1,0 +1,5 @@
+let id=null;
+async function carregar(){id=null;document.querySelector('#edicao').hidden=true;try{const p=await buscarCPF(document.querySelector('#cpfBusca').value);id=p.id;const form=document.querySelector('#cadastro');campos.forEach(f=>form.elements[f].value=p[f]);document.querySelector('#identificador').textContent=`Editando registro #${id}`;document.querySelector('#edicao').hidden=false;mensagem('Cadastro encontrado.');}catch(err){mensagem(err.message,true);}}
+document.querySelector('#busca').addEventListener('submit',e=>{e.preventDefault();carregar();});
+document.querySelector('#cadastro').addEventListener('submit',async e=>{e.preventDefault();if(id===null)return;const b=e.target.querySelector('button');b.disabled=true;try{await api('/pessoas/'+encodeURIComponent(id),'PUT',dadosFormulario(e.target));mensagem('Cadastro atualizado com sucesso.');document.querySelector('#edicao').hidden=true;id=null;}catch(err){mensagem(err.message,true);}finally{b.disabled=false;}});
+const cpf=new URLSearchParams(location.search).get('cpf');if(cpf){document.querySelector('#cpfBusca').value=cpf;carregar();}
